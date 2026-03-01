@@ -1,6 +1,8 @@
-numpy
+numpy<2.0.0
 opencv-python
 pre-commit
 rclpy-intellisense
 ros-std-msgs
+rosbags
 # sensor_msgs_py
+rosbags-image
