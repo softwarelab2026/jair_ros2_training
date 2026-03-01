@@ -9,6 +9,8 @@
             "extensions": [
                 "ms-python.python",
                 "ms-python.pylint",
+                "pijar.ros-snippets",
+                "Ranch-Hand-Robotics.rde-ros-2"
             ]
         }
     },
