@@ -2,7 +2,7 @@
 FROM osrf/ros:humble-desktop-full
 
 RUN apt update && apt upgrade -y
-RUN apt install -y ros-humble-turtlesim
+RUN apt install -y ros-humble-turtlesim ros-humble-rqt
 
 RUN apt install -y bash-completion python3-argcomplete python3-colcon-argcomplete
 
