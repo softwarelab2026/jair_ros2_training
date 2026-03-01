@@ -2,7 +2,7 @@ import launch_ros.actions
 from launch import LaunchDescription
 
 
-def generate_launch_description():
+def generate_launch_description() -> LaunchDescription:
     return LaunchDescription(
         [
             launch_ros.actions.Node(package='turtlesim', executable='turtlesim_node', output='screen'),
@@ -10,5 +10,5 @@ def generate_launch_description():
             launch_ros.actions.Node(package='rqt_gui', executable='rqt_gui', output='screen'),
             launch_ros.actions.Node(package='jair_turtlesim', executable='follower', output='screen'),
             launch_ros.actions.Node(package='jair_turtlesim', executable='image_feeder', output='screen'),
-        ]
+        ],
     )

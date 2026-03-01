@@ -6,18 +6,18 @@ from sensor_msgs.msg import Image
 class Follower(Node):
     FPS = 30
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__('turtle_follower')
         self.subscription = self.create_subscription(Image, 'camera/raw_image', self._handle_image, 10)
 
-    def _handle_image(self, img):
-        self.get_logger().info('I got an image: "%s"' % img.data)
+    def _handle_image(self, img: Image) -> None:
+        self.get_logger().info(f'I got an image: "{img.data}"')
 
-    def follow(self):
+    def follow(self) -> None:
         pass
 
 
-def main(args=None):
+def main(args: list[str] | None = None) -> None:
     rclpy.init(args=args)
     follower = Follower()
     rclpy.spin(follower)

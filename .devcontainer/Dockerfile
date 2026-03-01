@@ -1,7 +1,7 @@
 FROM osrf/ros:humble-desktop-full
 RUN apt update && apt upgrade -y
 
-# env 
+# env
 RUN apt install -y ssh git
 # GUI - on host: sudo xhost +local:docker
 ENV DISPLAY=$DISPLAY

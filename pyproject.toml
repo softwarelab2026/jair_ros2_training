@@ -31,6 +31,7 @@ strict = true
 ignore_missing_imports = true
 install_types = true
 non_interactive = true
+disallow_subclassing_any = false
 
 [tool.pylint."MESSAGES CONTROL"]
 max-line-length = 120
