@@ -73,3 +73,24 @@ Documentation: Does the report explain the approach, techniques used, and challe
 
 
 Note: Students are encouraged to use existing ROS2 libraries for image handling and may reference documentation for OpenCV and ROS2. This assignment requires a good understanding of image processing and basic control systems.
+
+<br><br>
+
+Notes:
+
+
+מצרף דגשים שלי, זה ברשת יחידה יותר מפורט אבל אני לא לידו
+
+1. בפייטון לא כזה חשוב דבקונטיינר כי יש venv, ברוס אין, זה cpp משולב עם python לכן לפני שאתם מתחילים תעשו devcontainer שמצליח גם להריץ turtlesim
+
+2. אם יש לכם מצלמה בלפטופ צריך לעשות אינטגרציה, לכתוב node שיקרא מצלמה וישלח image_raw. אם אין לכם מצלמה בלפטופ תעשו node שמדמה סרטון של כדור, הchat יודע לעשות את זה טוב
+
+3. אל תשתמשו בchat לכל דבר שהוא לא ליצור סרטון כדור.
+
+4. כשאתם משתמשים בopencv, תבינו לעומק מה האלגוריתם שבא מאחור איך הוא עובד ומה נכנס אליו ומה יוצא
+
+5. בnode שמקבל לאן להגיע ושולט על הבקרה נמוכה(pid) אל תשתמשו בsimple pid, תיצרו אחד משלכם. ובכללי תפרידו לוגיקה מהתקשורת רוס, unit testing על כל מה שאפשר אחרי הפרדת לוגיקה מתקשורת
+
+6. בסוף מצופה שיהיה גם דוקר לפרודקשן(מניח שdev containrt יהיה לכם בתחילת תרגיל) וגם docker compose שמריץ את כל התוכנה
+
+7. תפתחו פרוייקט בגיט ותשתפו אותה, כרגיל לא לעבוד על main ולעשות merge request ואעבור על הכל
