@@ -79,7 +79,7 @@ Note: Students are encouraged to use existing ROS2 libraries for image handling 
 Notes:
 
 
-מצרף דגשים שלי, זה ברשת יחידה יותר מפורט אבל אני לא לידו
+מצרף דגשים שלי:
 
 1. בפייטון לא כזה חשוב דבקונטיינר כי יש venv, ברוס אין, זה cpp משולב עם python לכן לפני שאתם מתחילים תעשו devcontainer שמצליח גם להריץ turtlesim
 
