@@ -7,3 +7,4 @@ eval "$(register-python-argcomplete3 colcon 2>/dev/null || register-python-argco
 
 export ROS_DOMAIN_ID=0
 export ROS_LOCALHOST_ONLY=0
+# export DISPLAY=:0

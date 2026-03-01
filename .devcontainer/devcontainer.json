@@ -15,6 +15,10 @@
     "mounts":[
         "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
     ],
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}",
+        "QT_X11_NO_MITSHM": "1",
+    },
     "postCreateCommand": ".devcontainer/setup_devcontainer.sh",
     // "remoteUser": "root"
 }
