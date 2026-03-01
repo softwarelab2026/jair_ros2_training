@@ -3,8 +3,6 @@ FROM ros:humble-ros-base
 
 RUN apt update && apt upgrade -y
 RUN apt install -y ssh
-# RUN apt install -y ros-humble-rqt-graph
-# RUN apt install -y x11-apps
 
 ENV DISPLAY=$DISPLAY
 ENV XAUTHORITY=/tmp/.docker.xauth
