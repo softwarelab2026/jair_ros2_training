@@ -46,7 +46,6 @@ class ImageFeeder(Node):
 
     def _publish_img(self):
         img = self._create_img(self.IMG_WIDTH, self.IMG_HEIGHT)
-        self.get_logger().info('Publishing: image')
         self.publisher_.publish(CvBridge().cv2_to_imgmsg(img))
         self._show_image(img)
 
