@@ -3,4 +3,4 @@ opencv-python
 pre-commit
 rclpy-intellisense
 ros-std-msgs
-sensor_msgs_py
+# sensor_msgs_py
