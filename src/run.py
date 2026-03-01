@@ -14,9 +14,9 @@ def generate_launch_description():
             executable='rqt_gui', output='screen'),
         launch_ros.actions.Node(
             package='jair_turtlesim',
-            executable='jair_turtlesim', output='screen'),
-        # launch_ros.actions.Node(
-        #     namespace='image_feeder', package='image_feeder',
-        #     executable='image_feeder', output='screen'),
+            executable='follower', output='screen'),
+        launch_ros.actions.Node(
+            package='jair_turtlesim',
+            executable='image_feeder', output='screen'),
     ])
 
