@@ -13,7 +13,7 @@
         }
     },
     "mounts":[
-        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind"
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
     ],
     "postCreateCommand": ".devcontainer/setup_devcontainer.sh",
     // "remoteUser": "root"
