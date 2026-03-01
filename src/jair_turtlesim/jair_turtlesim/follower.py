@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
-
 from sensor_msgs.msg import Image
+
 
 class Follower(Node):
     FPS = 30
@@ -17,13 +17,12 @@ class Follower(Node):
         pass
 
 
-def main(args = None):
+def main(args=None):
     rclpy.init(args=args)
     follower = Follower()
     rclpy.spin(follower)
     follower.destroy_node()
     rclpy.shutdown()
-
 
 
 if __name__ == '__main__':

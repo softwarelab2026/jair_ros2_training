@@ -1,8 +1,7 @@
 import rclpy
 from rclpy.node import Node
-
-from std_msgs.msg import String
 from sensor_msgs.msg import Image
+from std_msgs.msg import String
 
 
 class ImageFeeder(Node):
@@ -14,6 +13,9 @@ class ImageFeeder(Node):
         timer_period = 1 / self.FPS
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
+
+    def _create_img(self):
+        pass
 
     def timer_callback(self):
         msg = String()

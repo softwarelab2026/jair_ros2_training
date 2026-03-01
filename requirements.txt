@@ -1,6 +1,6 @@
-rclpy-intellisense
-ros-std-msgs
-sensor_msgs_py
 numpy
 opencv-python
 pre-commit
+rclpy-intellisense
+ros-std-msgs
+sensor_msgs_py
