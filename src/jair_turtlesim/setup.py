@@ -24,7 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'follower = jair_turtlesim.follower:main'
+            'follower = jair_turtlesim.follower:main',
+            'image_feeder = image_feeder.image_feeder:main',
         ],
     },
 )
