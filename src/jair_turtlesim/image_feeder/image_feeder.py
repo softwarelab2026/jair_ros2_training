@@ -1,3 +1,5 @@
+import random
+
 import cv2
 import numpy as np
 import rclpy
@@ -5,10 +7,17 @@ from cv_bridge import CvBridge
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 
+def limit(_value:int, _min:int, _max:int) -> int:
+    _value = max(_min, _value)
+    _value = min(_max, _value)
+    return _value
+
+def get_sign(value:int) -> int:
+    return limit(value, -1, 1)
 
 class ImageFeeder(Node):
     FPS = 25
-    IMG_WIDTH = 500
+    IMG_WIDTH = 800
     IMG_HEIGHT = 800
     BALL_RADIUS = 20
 
@@ -18,10 +27,10 @@ class ImageFeeder(Node):
         timer_period = 1 / self.FPS
         self.timer = self.create_timer(timer_period, self._publish_img)
 
-        self._ball_pos_x = int(self.IMG_HEIGHT / 2)
-        self._ball_pos_y = int(self.IMG_WIDTH / 2)
-        self._ball_dir_x = 5
-        self._ball_dir_y = -5
+        self._ball_pos_x = random.randint(self.BALL_RADIUS, self.IMG_WIDTH - self.BALL_RADIUS)
+        self._ball_pos_y = random.randint(self.BALL_RADIUS, self.IMG_HEIGHT - self.BALL_RADIUS)
+        self._ball_dir_x = -5
+        self._ball_dir_y = 5
 
         # img = self._create_img(self.IMG_WIDTH, self.IMG_HEIGHT)
         # self._show_image(img)
@@ -36,11 +45,15 @@ class ImageFeeder(Node):
     def _get_ball_pos(self) -> tuple[int, int]:
         if self._ball_pos_x <= self.BALL_RADIUS or self._ball_pos_x + self.BALL_RADIUS >= self.IMG_HEIGHT:
             self._ball_dir_x *= -1
+            self._ball_dir_x = get_sign(self._ball_dir_x) * random.randint(4, 8)
         elif self._ball_pos_y <= self.BALL_RADIUS or self._ball_pos_y + self.BALL_RADIUS >= self.IMG_WIDTH:
             self._ball_dir_y *= -1
-
+            self._ball_dir_y = get_sign(self._ball_dir_y) * random.randint(4, 7)
+        
         self._ball_pos_x += self._ball_dir_x
         self._ball_pos_y += self._ball_dir_y
+        self._ball_pos_x = limit(self._ball_pos_x, self.BALL_RADIUS, self.IMG_WIDTH - self.BALL_RADIUS)
+        self._ball_pos_y = limit(self._ball_pos_y, self.BALL_RADIUS, self.IMG_HEIGHT - self.BALL_RADIUS)
 
         return self._ball_pos_x, self._ball_pos_y
 
