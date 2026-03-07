@@ -1,25 +1,17 @@
-import random
+from typing import Any
 
-import cv2
-import numpy as np
+import cv2  # pylint: disable=import-error
+import numpy as np  # pylint: disable=import-error
 import rclpy
 from cv_bridge import CvBridge
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 
-def limit(_value:int, _min:int, _max:int) -> int:
-    _value = max(_min, _value)
-    _value = min(_max, _value)
-    return _value
+from image_feeder.image_generator import ImageGenerator
 
-def get_sign(value:int) -> int:
-    return limit(value, -1, 1)
 
 class ImageFeeder(Node):
     FPS = 25
-    IMG_WIDTH = 800
-    IMG_HEIGHT = 800
-    BALL_RADIUS = 20
 
     def __init__(self) -> None:
         super().__init__('image_feeder_raw')
@@ -27,47 +19,19 @@ class ImageFeeder(Node):
         timer_period = 1 / self.FPS
         self.timer = self.create_timer(timer_period, self._publish_img)
 
-        self._ball_pos_x = random.randint(self.BALL_RADIUS, self.IMG_WIDTH - self.BALL_RADIUS)
-        self._ball_pos_y = random.randint(self.BALL_RADIUS, self.IMG_HEIGHT - self.BALL_RADIUS)
-        self._ball_dir_x = -5
-        self._ball_dir_y = 5
+        self._img_generator = ImageGenerator(width=800, height=800, ball_radius=20)
 
-        # img = self._create_img(self.IMG_WIDTH, self.IMG_HEIGHT)
-        # self._show_image(img)
-
-    def __delete__(self, instance):
+    def __delete__(self, instance: Any) -> None:
         cv2.destroyAllWindows()
 
-    def _show_image(self, img) -> None:
+    def _show_image(self, img: np.ndarray) -> None:
         cv2.imshow('Image', img)
         cv2.waitKey(1)
 
-    def _get_ball_pos(self) -> tuple[int, int]:
-        if self._ball_pos_x <= self.BALL_RADIUS or self._ball_pos_x + self.BALL_RADIUS >= self.IMG_HEIGHT:
-            self._ball_dir_x *= -1
-            self._ball_dir_x = get_sign(self._ball_dir_x) * random.randint(4, 8)
-        elif self._ball_pos_y <= self.BALL_RADIUS or self._ball_pos_y + self.BALL_RADIUS >= self.IMG_WIDTH:
-            self._ball_dir_y *= -1
-            self._ball_dir_y = get_sign(self._ball_dir_y) * random.randint(4, 7)
-        
-        self._ball_pos_x += self._ball_dir_x
-        self._ball_pos_y += self._ball_dir_y
-        self._ball_pos_x = limit(self._ball_pos_x, self.BALL_RADIUS, self.IMG_WIDTH - self.BALL_RADIUS)
-        self._ball_pos_y = limit(self._ball_pos_y, self.BALL_RADIUS, self.IMG_HEIGHT - self.BALL_RADIUS)
-
-        return self._ball_pos_x, self._ball_pos_y
-
-    def _publish_img(self):
-        img = self._create_img(self.IMG_WIDTH, self.IMG_HEIGHT)
+    def _publish_img(self) -> None:
+        img = self._img_generator.render_frame()
         self.publisher_.publish(CvBridge().cv2_to_imgmsg(img))
         self._show_image(img)
-
-    def _create_img(self, height: int, width: int) -> None:
-        black_img = np.zeros((height, width, 3), np.uint8)
-
-        circle_pos = (int(height / 2), int(width / 2))
-        cv2.circle(black_img, self._get_ball_pos(), self.BALL_RADIUS, color=(0, 255, 0), thickness=-1)
-        return black_img
 
 
 def main(args: list[str] | None = None) -> None:
