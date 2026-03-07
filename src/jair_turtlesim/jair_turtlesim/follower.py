@@ -1,12 +1,10 @@
-import cv2
-import numpy as np
-from jair_turtlesim.ball_tracker import BallTracker
 import rclpy
-from cv_bridge import CvBridge
 from geometry_msgs.msg import Twist
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 from turtlesim.msg import Pose
+
+from jair_turtlesim.ball_tracker import BallTracker
 
 
 class Follower(Node):
@@ -21,8 +19,6 @@ class Follower(Node):
         self.turtle_pos = Pose()
         self._ball_tracker = BallTracker(self.get_logger())
 
-        
-
     def _handle_image(self, frame: Image) -> None:
         gas, steer = self._ball_tracker.track_ball(frame, self.turtle_pos)
 
@@ -31,7 +27,6 @@ class Follower(Node):
         twist_msg.linear.x = float(gas)
         # twist_msg.linear.y = 1.0 # to the side
         self.pub_turtle_vel.publish(twist_msg)
-
 
     def _get_turtle_pose(self, turtle_pos: Pose) -> None:
         self.turtle_pos = turtle_pos
