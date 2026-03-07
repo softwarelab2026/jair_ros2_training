@@ -12,8 +12,8 @@ from jair_turtlesim.pid import PID
 
 class BallTracker:
     def __init__(self, logger: RcutilsLogger):
-        self.pid_linear = PID(2)
-        self.pid_angular = PID(1)
+        self.pid_linear = PID(0.5)
+        self.pid_angular = PID(12, 0.02, 0.05)
         self._logger = logger
 
     def _normalize_turtle_pos(self, turtle_pos: Pose) -> tuple[float, float, float]:
@@ -70,8 +70,8 @@ class BallTracker:
         dist = math.sqrt(y_dist**2 + x_dist**2)
 
         angle_rad = 0.0
-        angle_rad = math.atan(y_dist / x_dist)
-        angle_rad = turtle_theta_rad - angle_rad
+        angle_rad = math.atan2(y_dist, x_dist)
+        angle_rad = angle_rad - turtle_theta_rad
         # if turtle_theta_rad > math.pi / 2:
         #     angle_rad += math.pi/2
         # if turtle_theta_rad < -math.pi/2:
@@ -108,8 +108,8 @@ class BallTracker:
         if self._ball_behind_turtle(turtle_angular_err):
             gas = 0
 
-        gas = 0
-        steer = 0
+        # gas = 0
+        # steer = 0
 
         gas = max(gas, 0)
         return gas, steer
