@@ -7,8 +7,6 @@ from turtlesim.msg import Pose
 
 
 class Follower(Node):
-    FPS = 30
-
     def __init__(self) -> None:
         super().__init__('turtle_follower')
         self.sub_img = self.create_subscription(Image, 'camera/raw_image', self._handle_image, 10)

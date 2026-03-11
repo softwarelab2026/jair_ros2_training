@@ -2,6 +2,7 @@
 import pytest
 from image_feeder.image_generator import ImageGenerator
 from follower.ball_tracker import BallTracker
+from turtlesim.msg import Pose
 
 @pytest.fixture
 def image_generator() -> ImageGenerator:
@@ -13,3 +14,11 @@ def image_generator() -> ImageGenerator:
 @pytest.fixture
 def ball_tracker() -> BallTracker:
     return BallTracker(None)
+
+@pytest.fixture
+def turtle_pos() -> Pose:
+    pose = Pose()
+    pose._theta = 0
+    pose._x = 11/2
+    pose.y = 11/2
+    return pose

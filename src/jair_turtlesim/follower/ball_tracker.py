@@ -1,4 +1,5 @@
 import math
+import time
 
 import cv2
 import numpy as np
@@ -12,8 +13,9 @@ from turtlesim.msg import Pose
 # pylint: disable=too-few-public-methods
 class BallTracker:
     def __init__(self, logger: RcutilsLogger):
-        self.pid_linear = PID(5, 0.001, 0.01)
+        self.pid_linear = PID(30, 0.001, 0.05)
         self.pid_angular = PID(12, 0.02, 0.05)
+        self._last_tracker_call = time.time()
         self._logger = logger
 
     def _normalize_turtle_pos(self, turtle_pos: Pose) -> tuple[float, float, float]:
@@ -76,23 +78,29 @@ class BallTracker:
         y_dist = norm_ball_pos[1] - norm_turtle_pos[1]
         dist = math.sqrt(y_dist**2 + x_dist**2)
 
-        angle_rad = 0.0
-        angle_rad = math.atan(y_dist / x_dist)
-        angle_rad = angle_rad - turtle_theta_rad
-        # if turtle_theta_rad > math.pi / 2:
-        #     angle_rad += math.pi/2
-        # if turtle_theta_rad < -math.pi/2:
-        #     angle_rad -= math.pi/2
+        ball_angle = math.atan2(y_dist, x_dist)
+        angle_target_incr_rad = self._turn_with_closest_angle(ball_angle - turtle_theta_rad)
 
         if self._logger:
-            self._logger.info(f'ball angle {round(angle_rad, 2)}')
+            self._logger.info(f'ball angle {round(angle_target_incr_rad, 2)}')
 
-        return dist, angle_rad
+        return dist, angle_target_incr_rad
 
     def _ball_behind_turtle(self, ball_angle: float) -> bool:
         return abs(ball_angle) > math.pi / 2
 
-    def track_ball(self, _frame: Image, turtle_pos: Pose) -> tuple[float, float]:
+    def _turn_with_closest_angle(self, angle_diff: float) -> float:
+        coterminal_angle_plus = angle_diff + 2 * math.pi
+        coterminal_angle_minus = angle_diff - 2 * math.pi
+
+        coterminal_angle_plus = coterminal_angle_plus % (2 * math.pi)
+        coterminal_angle_minus = coterminal_angle_minus % (-2 * math.pi)
+
+        if abs(coterminal_angle_plus) < abs(coterminal_angle_minus):
+            return coterminal_angle_plus
+        return coterminal_angle_minus
+
+    def _calc_linear_angular_err(self, _frame: Image, turtle_pos: Pose) -> tuple[float, float]:
         ball_pos_norm = self._get_ball_pos_norm(_frame)
         norm_ball_x, norm_ball_y = self._fix_image_rotation_to_turtle(ball_pos_norm)
         norm_turtle_x, norm_turtle_y, turtle_theta = self._normalize_turtle_pos(turtle_pos)
@@ -102,9 +110,6 @@ class BallTracker:
             (norm_turtle_x, norm_turtle_y, turtle_theta),
         )
 
-        gas = self.pid_linear.calc(turtle_linear_err)
-        steer = self.pid_angular.calc(turtle_angular_err)
-
         if self._logger:
             self._logger.info(f'Ball pos: {round(norm_ball_x, 2)},\t{round(norm_ball_y, 2)}')
             self._logger.info(
@@ -113,14 +118,24 @@ class BallTracker:
             self._logger.info(
                 f'Error linear,anglular: {round(turtle_linear_err, 2)},\t{round(turtle_angular_err, 2)} rad',
             )
+
+        return turtle_linear_err, turtle_angular_err
+
+    def track_ball(self, _frame: Image, turtle_pos: Pose) -> tuple[float, float]:
+        (turtle_linear_err, turtle_angular_err) = self._calc_linear_angular_err(_frame, turtle_pos)
+
+        dt = time.time() - self._last_tracker_call
+        gas = self.pid_linear.calc(turtle_linear_err, dt)
+        steer = self.pid_angular.calc(turtle_angular_err, dt)
+
+        if self._logger:
             self._logger.info(f'gas, steer: {round(gas, 2)},\t{round(steer, 2)} rad')
             self._logger.info(f'ball behind turtle: {self._ball_behind_turtle(turtle_angular_err)}')
 
         if self._ball_behind_turtle(turtle_angular_err):
             gas = 0
 
-        gas = 0
-        # steer = 0
-
         gas = max(gas, 0)
+
+        self._last_tracker_call = time.time()
         return gas, steer
