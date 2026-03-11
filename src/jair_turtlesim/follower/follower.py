@@ -1,10 +1,9 @@
 import rclpy
+from follower.ball_tracker import BallTracker
 from geometry_msgs.msg import Twist
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 from turtlesim.msg import Pose
-
-from jair_turtlesim.ball_tracker import BallTracker
 
 
 class Follower(Node):

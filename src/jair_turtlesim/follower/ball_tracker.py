@@ -3,24 +3,24 @@ import math
 import cv2
 import numpy as np
 from cv_bridge import CvBridge
+from follower.pid import PID
 from rclpy.impl.rcutils_logger import RcutilsLogger
 from sensor_msgs.msg import Image
 from turtlesim.msg import Pose
 
-from jair_turtlesim.pid import PID
 
-
+# pylint: disable=too-few-public-methods
 class BallTracker:
     def __init__(self, logger: RcutilsLogger):
-        self.pid_linear = PID(0.5)
+        self.pid_linear = PID(5, 0.001, 0.01)
         self.pid_angular = PID(12, 0.02, 0.05)
         self._logger = logger
 
     def _normalize_turtle_pos(self, turtle_pos: Pose) -> tuple[float, float, float]:
-        TURTLE_WINDOW_HEIGHT = 11
-        TURTLE_WINDOW_WIDTH = 11
-        norm_x = np.interp(turtle_pos.x, [0, TURTLE_WINDOW_WIDTH], [0, 1])
-        norm_y = np.interp(turtle_pos.y, [0, TURTLE_WINDOW_HEIGHT], [0, 1])
+        turtle_window_height = 11
+        turtle_window_width = 11
+        norm_x = np.interp(turtle_pos.x, [0, turtle_window_width], [0, 1])
+        norm_y = np.interp(turtle_pos.y, [0, turtle_window_height], [0, 1])
         return norm_x, norm_y, turtle_pos.theta
 
     def _normalize_ball_pos(
@@ -50,34 +50,42 @@ class BallTracker:
                 return (int(x), int(y))
         return (0, 0)
 
-    def _fix_image_rotation_to_turtle(self, ball_pos_norm):
+    def _fix_image_rotation_to_turtle(self, ball_pos_norm: tuple[float, float]) -> tuple[float, float]:
         ball_x, ball_y = ball_pos_norm
         ball_y = 1 - ball_y
         return ball_x, ball_y
 
+    def _ros_img_to_cv2(self, _frame: Image) -> np.ndarray:
+        return CvBridge().imgmsg_to_cv2(_frame, desired_encoding='passthrough')
+
     def _get_ball_pos_norm(self, _frame: Image) -> tuple[float, float]:
-        frame_cv2 = CvBridge().imgmsg_to_cv2(_frame, desired_encoding='passthrough')
+        frame_cv2 = self._ros_img_to_cv2(_frame)
         frame_height, frame_width = 800, 800
 
         ball_x, ball_y = self._extract_ball_pos(frame_cv2)
         norm_ball_x, norm_ball_y = self._normalize_ball_pos(frame_height, frame_width, ball_x, ball_y)
         return norm_ball_x, norm_ball_y
 
-    def _turtle_error(self, norm_ball_pos: tuple[float, float], norm_turtle_pos: tuple[float, float, float]) -> float:
+    def _turtle_error(
+        self,
+        norm_ball_pos: tuple[float, float],
+        norm_turtle_pos: tuple[float, float, float],
+    ) -> tuple[float, float]:
         turtle_theta_rad = norm_turtle_pos[2]
         x_dist = norm_ball_pos[0] - norm_turtle_pos[0]
         y_dist = norm_ball_pos[1] - norm_turtle_pos[1]
         dist = math.sqrt(y_dist**2 + x_dist**2)
 
         angle_rad = 0.0
-        angle_rad = math.atan2(y_dist, x_dist)
+        angle_rad = math.atan(y_dist / x_dist)
         angle_rad = angle_rad - turtle_theta_rad
         # if turtle_theta_rad > math.pi / 2:
         #     angle_rad += math.pi/2
         # if turtle_theta_rad < -math.pi/2:
         #     angle_rad -= math.pi/2
 
-        self._logger.info(f'ball angle {round(angle_rad, 2)}')
+        if self._logger:
+            self._logger.info(f'ball angle {round(angle_rad, 2)}')
 
         return dist, angle_rad
 
@@ -97,18 +105,21 @@ class BallTracker:
         gas = self.pid_linear.calc(turtle_linear_err)
         steer = self.pid_angular.calc(turtle_angular_err)
 
-        self._logger.info(f'Ball pos: {round(norm_ball_x, 2)},\t{round(norm_ball_y, 2)}')
-        self._logger.info(
-            f'turtle pos: {round(norm_turtle_x, 2)}\t,{round(norm_turtle_y, 2)}\ttheta: {round(turtle_theta, 2)}',
-        )
-        self._logger.info(f'Error linear,anglular: {round(turtle_linear_err, 2)},\t{round(turtle_angular_err, 2)} rad')
-        self._logger.info(f'gas, steer: {round(gas, 2)},\t{round(steer, 2)} rad')
-        self._logger.info(f'ball behind turtle: {self._ball_behind_turtle(turtle_angular_err)}')
+        if self._logger:
+            self._logger.info(f'Ball pos: {round(norm_ball_x, 2)},\t{round(norm_ball_y, 2)}')
+            self._logger.info(
+                f'turtle pos: {round(norm_turtle_x, 2)}\t,{round(norm_turtle_y, 2)}\ttheta: {round(turtle_theta, 2)}',
+            )
+            self._logger.info(
+                f'Error linear,anglular: {round(turtle_linear_err, 2)},\t{round(turtle_angular_err, 2)} rad',
+            )
+            self._logger.info(f'gas, steer: {round(gas, 2)},\t{round(steer, 2)} rad')
+            self._logger.info(f'ball behind turtle: {self._ball_behind_turtle(turtle_angular_err)}')
 
         if self._ball_behind_turtle(turtle_angular_err):
             gas = 0
 
-        # gas = 0
+        gas = 0
         # steer = 0
 
         gas = max(gas, 0)

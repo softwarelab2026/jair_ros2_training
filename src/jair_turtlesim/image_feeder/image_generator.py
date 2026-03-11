@@ -41,8 +41,12 @@ class ImageGenerator:
 
         return self._ball_pos_x, self._ball_pos_y
 
-    def render_frame(self) -> np.ndarray:
+    def _render_current_state(self) -> np.ndarray:
         black_img = np.zeros((self.image_height, self.image_width, 3), np.uint8)
 
-        cv2.circle(black_img, self._move_ball(), self.ball_radius, color=(0, 255, 0), thickness=-1)
+        cv2.circle(black_img, (self._ball_pos_x, self._ball_pos_y), self.ball_radius, color=(0, 255, 0), thickness=-1)
         return black_img
+
+    def render_frame(self) -> np.ndarray:
+        self._move_ball()
+        return self._render_current_state()

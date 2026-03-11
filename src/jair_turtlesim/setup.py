@@ -21,9 +21,10 @@ setup(
             'pytest',
         ],
     },
+    test_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'follower = jair_turtlesim.follower:main',
+            'follower = follower.follower:main',
             'image_feeder = image_feeder.image_feeder:main',
         ],
     },

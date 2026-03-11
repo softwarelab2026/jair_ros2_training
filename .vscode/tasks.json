@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "tasks": [
         {
-            "label": "Run",
+            "label": "Run turtlesim Node",
             "type": "shell",
             "command": "source install/setup.bash && ros2 launch run.py",
             "options": {
@@ -21,7 +21,18 @@
                 "clear": true
             },
             "problemMatcher": []
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "colcon build --symlink-install && clear && colcon test --event-handlers console_direct+",
+            "options": {
+                "cwd": "${workspaceFolder}/src",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": ["-c"]
+                }
+            },
         }
-
     ]
 }

@@ -4,10 +4,9 @@ import cv2  # pylint: disable=import-error
 import numpy as np  # pylint: disable=import-error
 import rclpy
 from cv_bridge import CvBridge
+from image_feeder.image_generator import ImageGenerator
 from rclpy.node import Node
 from sensor_msgs.msg import Image
-
-from image_feeder.image_generator import ImageGenerator
 
 
 class ImageFeeder(Node):
