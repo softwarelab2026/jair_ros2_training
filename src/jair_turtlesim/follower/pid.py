@@ -1,7 +1,4 @@
-def limit(_value: float, _min: float, _max: float) -> float:
-    _value = max(_min, _value)
-    _value = min(_max, _value)
-    return _value
+import numpy as np
 
 
 # pylint: disable=too-few-public-methods
@@ -19,12 +16,10 @@ class PID:
         self._i_growing += error * self._i
         d_term = (error - self._last_error) * self._d
 
-        p_term = limit(p_term, -self._output_limit, self._output_limit)
-        self._i_growing = limit(self._i_growing, -self._output_limit, self._output_limit)
-        d_term = limit(d_term, -self._output_limit, self._output_limit)
+        self._i_growing = np.clip(self._i_growing, -self._output_limit, self._output_limit)
 
         output = p_term + self._i_growing + d_term
-        output = limit(output, -self._output_limit, self._output_limit)
+        output = np.clip(output, -self._output_limit, self._output_limit)
 
         self._last_error = error
         return output
