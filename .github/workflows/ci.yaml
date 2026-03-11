@@ -27,6 +27,8 @@ jobs:
       - name: setup env
         run: |
           /bin/bash .devcontainer/setup_devcontainer.sh
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
       - name: run pre-commit
         run: |
           pre-commit run --all-files
