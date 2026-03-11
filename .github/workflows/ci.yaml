@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build-push-container:
+    runs-on: ubuntu-latest
+    container:
+      image: osrf/ros:humble-desktop
+    steps:
+      - uses: actions/checkout@v4
+      - name: install python deps
+        run: |
+          apt update
+          apt install -y python3 python3-pip
+      - name: install ROS2 deps for simulation
+        run: |
+          apt install -y ros-humble-turtlesim ros-humble-rqt python3-colcon-core python3-colcon-common-extensions
+      - name: setup env
+        run: |
+          /bin/bash .devcontainer/setup_devcontainer.sh
+      - name: run pre-commit
+        run: |
+          pre-commit run --all-files
+      - name: run tests
+        run: |
+          cd src
+          colcon build --symlink-install
+          colcon test --event-handlers console_direct+
