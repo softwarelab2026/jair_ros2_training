@@ -12,7 +12,9 @@
                 "cwd": "${workspaceFolder}/src",
                 "shell": {
                     "executable": "/bin/bash",
-                    "args": ["-c"]
+                    "args": [
+                        "-c"
+                    ]
                 }
             },
             "presentation": {
@@ -30,9 +32,26 @@
                 "cwd": "${workspaceFolder}/src",
                 "shell": {
                     "executable": "/bin/bash",
-                    "args": ["-c"]
+                    "args": [
+                        "-c"
+                    ]
+                }
+            }
+        },
+        {
+            "label": "pre-commit",
+            "type": "shell",
+            "command": "pre-commit run --all-files",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-c"
+                    ]
                 }
             },
+            "problemMatcher": []
         }
     ]
 }
