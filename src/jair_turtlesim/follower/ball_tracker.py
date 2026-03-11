@@ -19,7 +19,6 @@ def image_rotation_to_turtle_window(ball_x: float, ball_y: float) -> tuple[float
     return ball_x, ball_y
 
 
-# pylint: disable=too-few-public-methods
 class BallTracker:
     def __init__(self, logger: RcutilsLogger):
         self.pid_linear = PID(30, 0.05, 0.01)

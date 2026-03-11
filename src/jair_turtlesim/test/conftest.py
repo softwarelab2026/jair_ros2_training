@@ -7,8 +7,8 @@ from turtlesim.msg import Pose
 @pytest.fixture
 def image_generator() -> ImageGenerator:
     generator = ImageGenerator(800, 800, 20)
-    generator._ball_pos_x = int(generator.image_width / 2)
-    generator._ball_pos_y = int(generator.image_height / 2)
+    generator.ball_pos_x = int(generator.image_width / 2)
+    generator.ball_pos_y = int(generator.image_height / 2)
     return generator
 
 @pytest.fixture
@@ -20,5 +20,5 @@ def turtle_pos() -> Pose:
     pose = Pose()
     pose._theta = 0
     pose._x = 11/2
-    pose.y = 11/2
+    pose._y = 11/2
     return pose

@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "tasks": [
         {
-            "label": "Run turtlesim Node",
+            "label": "Run Turtlesim",
             "type": "shell",
             "command": "rm -rf build install log && colcon build --symlink-install && source install/setup.bash && ros2 launch run.py",
             "options": {
