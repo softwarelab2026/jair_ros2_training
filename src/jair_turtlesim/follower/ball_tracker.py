@@ -30,7 +30,7 @@ class BallTracker:
         self._last_tracker_call = time.time()
         self._logger = logger
 
-    def _extract_ball_pos(self, frame: np.ndarray) -> tuple[int, int]:
+    def extract_ball_pos(self, frame: np.ndarray) -> tuple[int, int]:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (7, 7), 0)
 
@@ -48,7 +48,7 @@ class BallTracker:
     def track_ball(self, _frame: Image, turtle_pos: Pose) -> tuple[float, float]:
         turtle_window_width, turtle_window_height = 11, 11
 
-        ball_x, ball_y = self._extract_ball_pos(ros_img_to_cv2(_frame))
+        ball_x, ball_y = self.extract_ball_pos(ros_img_to_cv2(_frame))
         norm_ball_x = np.interp(ball_x, [0, _frame.width], [0, 1])
         norm_ball_y = np.interp(ball_y, [0, _frame.height], [0, 1])
         norm_ball_x, norm_ball_y = image_rotation_to_turtle_window(norm_ball_x, norm_ball_y)
