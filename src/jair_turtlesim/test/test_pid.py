@@ -3,7 +3,7 @@ from jair_turtlesim.follower.pid import PID
 
 def test_pid_p():
     pid = PID(0.8, 0.0, 0.0)
-    pid._output_limit = 99999999
+    pid.output_limit = 99999999
     
     result = pid.calc(10, 0.1)
     
@@ -11,7 +11,7 @@ def test_pid_p():
 
 def test_pid_d():
     pid = PID(0.0, 0.1, 0.0)
-    pid._output_limit = 99999999
+    pid.output_limit = 99999999
     
     pid.calc(1, 0.1)
     result = pid.calc(10, 0.1)
@@ -20,7 +20,7 @@ def test_pid_d():
 
 def test_pid_i():
     pid = PID(0.0, 0.0, 0.01)
-    pid._output_limit = 99999999
+    pid.output_limit = 99999999
     
     for _ in range(10):
         pid.calc(10, 0.1)
@@ -30,7 +30,7 @@ def test_pid_i():
 
 def test_pid_i_wind_up_clamping():
     pid = PID(0.0, 0.0, 0.01)
-    pid._output_limit = 400
+    pid.output_limit = 400
     
     for _ in range(9999):
         pid.calc(1, 0.1)
@@ -41,7 +41,7 @@ def test_pid_i_wind_up_clamping():
 
 def test_output_clamp():
     pid = PID(0.8, 0.05, 0.01)
-    pid._output_limit = 4
+    pid.output_limit = 4
     
     for _ in range(10):
         pid.calc(10, 0.1)

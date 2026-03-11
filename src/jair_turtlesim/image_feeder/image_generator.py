@@ -4,14 +4,8 @@ import cv2  # pylint: disable=import-error
 import numpy as np  # pylint: disable=import-error
 
 
-def limit(_value: int, _min: int, _max: int) -> int:
-    _value = max(_min, _value)
-    _value = min(_max, _value)
-    return _value
-
-
 def get_sign(value: int) -> int:
-    return limit(value, -1, 1)
+    return int(np.clip(value, -1, 1))
 
 
 # pylint: disable=too-few-public-methods
@@ -36,8 +30,8 @@ class ImageGenerator:
 
         self._ball_pos_x += self._ball_jumps_x
         self._ball_pos_y += self._ball_jumps_y
-        self._ball_pos_x = limit(self._ball_pos_x, self.ball_radius, self.image_width - self.ball_radius)
-        self._ball_pos_y = limit(self._ball_pos_y, self.ball_radius, self.image_height - self.ball_radius)
+        self._ball_pos_x = np.clip(self._ball_pos_x, self.ball_radius, self.image_width - self.ball_radius)
+        self._ball_pos_y = np.clip(self._ball_pos_y, self.ball_radius, self.image_height - self.ball_radius)
 
         return self._ball_pos_x, self._ball_pos_y
 

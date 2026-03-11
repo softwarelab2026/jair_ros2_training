@@ -20,8 +20,8 @@ class Follower(Node):
         gas, steer = self._ball_tracker.track_ball(frame, self.turtle_pos)
 
         twist_msg = Twist()
-        twist_msg.angular.z = float(steer)
         twist_msg.linear.x = float(gas)
+        twist_msg.angular.z = float(steer)
         self.pub_turtle_vel.publish(twist_msg)
 
     def get_turtle_pose(self, turtle_pos: Pose) -> None:

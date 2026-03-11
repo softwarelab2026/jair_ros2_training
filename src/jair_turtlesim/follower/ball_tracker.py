@@ -14,7 +14,7 @@ def ros_img_to_cv2(_frame: Image) -> np.ndarray:
     return CvBridge().imgmsg_to_cv2(_frame, desired_encoding='passthrough')
 
 
-def fix_image_rotation_to_turtle(ball_x: float, ball_y: float) -> tuple[float, float]:
+def image_rotation_to_turtle_window(ball_x: float, ball_y: float) -> tuple[float, float]:
     ball_y = 1 - ball_y
     return ball_x, ball_y
 
@@ -51,7 +51,7 @@ class BallTracker:
         ball_x, ball_y = self._extract_ball_pos(ros_img_to_cv2(_frame))
         norm_ball_x = np.interp(ball_x, [0, _frame.width], [0, 1])
         norm_ball_y = np.interp(ball_y, [0, _frame.height], [0, 1])
-        norm_ball_x, norm_ball_y = fix_image_rotation_to_turtle(norm_ball_x, norm_ball_y)
+        norm_ball_x, norm_ball_y = image_rotation_to_turtle_window(norm_ball_x, norm_ball_y)
 
         norm_turtle_x = np.interp(turtle_pos.x, [0, turtle_window_width], [0, 1])
         norm_turtle_y = np.interp(turtle_pos.y, [0, turtle_window_height], [0, 1])
