@@ -4,5 +4,4 @@ pre-commit
 rclpy-intellisense
 ros-std-msgs
 rosbags
-# sensor_msgs_py
 rosbags-image

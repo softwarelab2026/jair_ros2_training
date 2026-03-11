@@ -27,7 +27,6 @@ class Follower(Node):
 
     def _get_turtle_pose(self, turtle_pos: Pose) -> None:
         self.turtle_pos = turtle_pos
-        # self.get_logger().info(f'got turtle pos: {turtle_pos}')
 
 
 def main(args: list[str] | None = None) -> None:
