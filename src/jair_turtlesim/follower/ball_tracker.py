@@ -1,13 +1,22 @@
-import math
 import time
 
 import cv2
 import numpy as np
 from cv_bridge import CvBridge
 from follower.pid import PID
+from follower.tracker import turtle_follow_ball
 from rclpy.impl.rcutils_logger import RcutilsLogger
 from sensor_msgs.msg import Image
 from turtlesim.msg import Pose
+
+
+def ros_img_to_cv2(_frame: Image) -> np.ndarray:
+    return CvBridge().imgmsg_to_cv2(_frame, desired_encoding='passthrough')
+
+
+def fix_image_rotation_to_turtle(ball_x: float, ball_y: float) -> tuple[float, float]:
+    ball_y = 1 - ball_y
+    return ball_x, ball_y
 
 
 # pylint: disable=too-few-public-methods
@@ -17,24 +26,6 @@ class BallTracker:
         self.pid_angular = PID(12, 0.02, 0.05)
         self._last_tracker_call = time.time()
         self._logger = logger
-
-    def _normalize_turtle_pos(self, turtle_pos: Pose) -> tuple[float, float, float]:
-        turtle_window_height = 11
-        turtle_window_width = 11
-        norm_x = np.interp(turtle_pos.x, [0, turtle_window_width], [0, 1])
-        norm_y = np.interp(turtle_pos.y, [0, turtle_window_height], [0, 1])
-        return norm_x, norm_y, turtle_pos.theta
-
-    def _normalize_ball_pos(
-        self,
-        frame_height: int,
-        frame_width: int,
-        ball_pos_x: int,
-        ball_pos_y: int,
-    ) -> tuple[float, float]:
-        norm_x = np.interp(ball_pos_x, [0, frame_width], [0, 1])
-        norm_y = np.interp(ball_pos_y, [0, frame_height], [0, 1])
-        return norm_x, norm_y
 
     def _extract_ball_pos(self, frame: np.ndarray) -> tuple[int, int]:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -48,81 +39,27 @@ class BallTracker:
             ((x, y), radius) = cv2.minEnclosingCircle(area_pos)
 
             if radius > 5:
-                # self.get_logger().info(f'Circle found at: x={int(x)}, y={int(y)}')
                 return (int(x), int(y))
         return (0, 0)
 
-    def _fix_image_rotation_to_turtle(self, ball_pos_norm: tuple[float, float]) -> tuple[float, float]:
-        ball_x, ball_y = ball_pos_norm
-        ball_y = 1 - ball_y
-        return ball_x, ball_y
-
-    def _ros_img_to_cv2(self, _frame: Image) -> np.ndarray:
-        return CvBridge().imgmsg_to_cv2(_frame, desired_encoding='passthrough')
-
-    def _get_ball_pos_norm(self, _frame: Image) -> tuple[float, float]:
-        frame_cv2 = self._ros_img_to_cv2(_frame)
-        frame_height, frame_width = 800, 800
-
-        ball_x, ball_y = self._extract_ball_pos(frame_cv2)
-        norm_ball_x, norm_ball_y = self._normalize_ball_pos(frame_height, frame_width, ball_x, ball_y)
-        return norm_ball_x, norm_ball_y
-
-    def _turtle_error(
-        self,
-        norm_ball_pos: tuple[float, float],
-        norm_turtle_pos: tuple[float, float, float],
-    ) -> tuple[float, float]:
-        turtle_theta_rad = norm_turtle_pos[2]
-        x_dist = norm_ball_pos[0] - norm_turtle_pos[0]
-        y_dist = norm_ball_pos[1] - norm_turtle_pos[1]
-        dist = math.sqrt(y_dist**2 + x_dist**2)
-
-        ball_angle = math.atan2(y_dist, x_dist)
-        angle_target_incr_rad = self._turn_with_closest_angle(ball_angle - turtle_theta_rad)
-
-        if self._logger:
-            self._logger.info(f'ball angle {round(angle_target_incr_rad, 2)}')
-
-        return dist, angle_target_incr_rad
-
-    def _ball_behind_turtle(self, ball_angle: float) -> bool:
-        return abs(ball_angle) > math.pi / 2
-
-    def _turn_with_closest_angle(self, angle_diff: float) -> float:
-        coterminal_angle_plus = angle_diff + 2 * math.pi
-        coterminal_angle_minus = angle_diff - 2 * math.pi
-
-        coterminal_angle_plus = coterminal_angle_plus % (2 * math.pi)
-        coterminal_angle_minus = coterminal_angle_minus % (-2 * math.pi)
-
-        if abs(coterminal_angle_plus) < abs(coterminal_angle_minus):
-            return coterminal_angle_plus
-        return coterminal_angle_minus
-
-    def _calc_linear_angular_err(self, _frame: Image, turtle_pos: Pose) -> tuple[float, float]:
-        ball_pos_norm = self._get_ball_pos_norm(_frame)
-        norm_ball_x, norm_ball_y = self._fix_image_rotation_to_turtle(ball_pos_norm)
-        norm_turtle_x, norm_turtle_y, turtle_theta = self._normalize_turtle_pos(turtle_pos)
-
-        (turtle_linear_err, turtle_angular_err) = self._turtle_error(
-            (norm_ball_x, norm_ball_y),
-            (norm_turtle_x, norm_turtle_y, turtle_theta),
-        )
-
-        if self._logger:
-            self._logger.info(f'Ball pos: {round(norm_ball_x, 2)},\t{round(norm_ball_y, 2)}')
-            self._logger.info(
-                f'turtle pos: {round(norm_turtle_x, 2)}\t,{round(norm_turtle_y, 2)}\ttheta: {round(turtle_theta, 2)}',
-            )
-            self._logger.info(
-                f'Error linear,anglular: {round(turtle_linear_err, 2)},\t{round(turtle_angular_err, 2)} rad',
-            )
-
-        return turtle_linear_err, turtle_angular_err
-
     def track_ball(self, _frame: Image, turtle_pos: Pose) -> tuple[float, float]:
-        (turtle_linear_err, turtle_angular_err) = self._calc_linear_angular_err(_frame, turtle_pos)
+        turtle_window_width, turtle_window_height = 11, 11
+
+        ball_x, ball_y = self._extract_ball_pos(ros_img_to_cv2(_frame))
+        norm_ball_x = np.interp(ball_x, [0, _frame.width], [0, 1])
+        norm_ball_y = np.interp(ball_y, [0, _frame.height], [0, 1])
+        norm_ball_x, norm_ball_y = fix_image_rotation_to_turtle(norm_ball_x, norm_ball_y)
+
+        norm_turtle_x = np.interp(turtle_pos.x, [0, turtle_window_width], [0, 1])
+        norm_turtle_y = np.interp(turtle_pos.y, [0, turtle_window_height], [0, 1])
+
+        turtle_angular_err, turtle_linear_err = turtle_follow_ball(
+            norm_ball_x,
+            norm_ball_y,
+            norm_turtle_x,
+            norm_turtle_y,
+            turtle_pos.theta,
+        )
 
         dt = time.time() - self._last_tracker_call
         gas = self.pid_linear.calc(turtle_linear_err, dt)
@@ -130,10 +67,6 @@ class BallTracker:
 
         if self._logger:
             self._logger.info(f'gas, steer: {round(gas, 2)},\t{round(steer, 2)} rad')
-            self._logger.info(f'ball behind turtle: {self._ball_behind_turtle(turtle_angular_err)}')
-
-        if self._ball_behind_turtle(turtle_angular_err):
-            gas = 0
 
         gas = max(gas, 0)
 
