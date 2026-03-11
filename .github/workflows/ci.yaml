@@ -32,6 +32,8 @@ jobs:
           pre-commit run --all-files
       - name: run tests
         run: |
+          source /opt/ros/humble/setup.sh
           cd src
           colcon build --symlink-install
+          source install/setup.bash
           colcon test --event-handlers console_direct+
