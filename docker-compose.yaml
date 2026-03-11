@@ -1,11 +1,21 @@
 services:
-  turtlesim:
+  ros_turtlesim_base:
     build:
       context: .
       dockerfile: .devcontainer/Dockerfile
+    image: ros_turtlesim_base:latest
+    profiles:
+      - build-only
+
+  turtlesim:
+    build:
+      context: .
+      dockerfile: production/Dockerfile
     container_name: turtlesim_tracker
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    depends_on:
+      - ros_turtlesim_base

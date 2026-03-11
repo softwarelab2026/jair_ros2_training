@@ -24,9 +24,9 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "colcon build --symlink-install && clear && colcon test --event-handlers console_direct+",
+            "command": "colcon build --symlink-install && clear && python3 -m pytest",
             "options": {
-                "cwd": "${workspaceFolder}/src",
+                "cwd": "${workspaceFolder}/src/jair_turtlesim",
                 "shell": {
                     "executable": "/bin/bash",
                     "args": [
