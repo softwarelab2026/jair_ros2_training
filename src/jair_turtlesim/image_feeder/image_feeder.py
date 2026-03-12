@@ -15,9 +15,9 @@ class ImageFeeder(Node):
 
     def __init__(self) -> None:
         super().__init__('image_feeder_raw')
-        self.publisher_ = self.create_publisher(Image, 'camera/raw_image', 10)
+        self._publisher = self.create_publisher(Image, 'camera/raw_image', 10)
         timer_period = 1 / self.FPS
-        self.timer = self.create_timer(timer_period, self.publish_img)
+        self._timer = self.create_timer(timer_period, self.publish_img)
 
         self._img_generator = ImageGenerator(width=800, height=800, ball_radius=20)
 
@@ -30,7 +30,7 @@ class ImageFeeder(Node):
 
     def publish_img(self) -> None:
         img = self._img_generator.render_frame()
-        self.publisher_.publish(CvBridge().cv2_to_imgmsg(img))
+        self._publisher.publish(CvBridge().cv2_to_imgmsg(img))
         self._show_image(img)
 
 
