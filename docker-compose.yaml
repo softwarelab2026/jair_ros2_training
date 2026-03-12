@@ -15,7 +15,7 @@ services:
   turtlesim:
     build:
       context: .
-      dockerfile: production/Dockerfile
+      dockerfile: deploy/Dockerfile
     container_name: turtlesim_tracker
     environment:
       - DISPLAY=${DISPLAY}
