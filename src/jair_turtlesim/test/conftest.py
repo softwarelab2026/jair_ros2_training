@@ -6,9 +6,10 @@ from turtlesim.msg import Pose
 
 @pytest.fixture
 def image_generator() -> ImageGenerator:
-    generator = ImageGenerator(800, 800, 20)
-    generator.ball_pos_x = int(generator.image_width / 2)
-    generator.ball_pos_y = int(generator.image_height / 2)
+    height, width = 800, 800
+    generator = ImageGenerator(height, width, 20)
+    generator.ball_pos_x = int(height / 2)
+    generator.ball_pos_y = int(width / 2)
     return generator
 
 @pytest.fixture
