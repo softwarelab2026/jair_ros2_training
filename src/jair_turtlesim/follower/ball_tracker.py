@@ -15,8 +15,8 @@ def _ros_img_to_cv2(_frame: Image) -> np.ndarray:
 # pylint: disable=too-few-public-methods
 class BallTracker:
     def __init__(self, logger: RcutilsLogger):
-        self._pid_linear = PID(2, 0.05, 0.01, 10)
-        self._pid_angular = PID(12, 0.05, 0.01, 10)
+        self._pid_linear = PID(8, 0.05, 0.01, 15)
+        self._pid_angular = PID(20, 0.08, 0, 15)
 
         self._logger = logger
 
