@@ -4,7 +4,7 @@
         {
             "label": "Run Turtlesim",
             "type": "shell",
-            "command": "source install/setup.bash && ros2 launch run.py",
+            "command": "source install/setup.bash && ros2 launch run.launch.py",
             "options": {
                 "cwd": "${workspaceFolder}/src",
                 "shell": {
