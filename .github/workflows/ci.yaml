@@ -8,6 +8,10 @@ on:
     branches:
       - '*'
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build-push-container:
     runs-on: ubuntu-latest
