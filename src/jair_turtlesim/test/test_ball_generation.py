@@ -1,6 +1,3 @@
-
-import math
-
 import pytest
 
 from image_feeder.image_generator import ImageGenerator

@@ -8,7 +8,7 @@ from sensor_msgs.msg import Image
 from turtlesim.msg import Pose
 
 
-def ros_img_to_cv2(_frame: Image) -> np.ndarray:
+def _ros_img_to_cv2(_frame: Image) -> np.ndarray:
     return CvBridge().imgmsg_to_cv2(_frame, desired_encoding='passthrough')
 
 
@@ -42,7 +42,7 @@ class BallTracker:
     def track_ball(self, _frame: Image, turtle_pos: Pose, dt: float) -> tuple[float, float]:
         turtle_window_width, turtle_window_height = 11, 11
 
-        ball_x, ball_y = self.extract_ball_pos(ros_img_to_cv2(_frame))
+        ball_x, ball_y = self.extract_ball_pos(_ros_img_to_cv2(_frame))
         norm_ball_x = np.interp(ball_x, [0, _frame.width], [0, 1])
         norm_ball_y = np.interp(ball_y, [0, _frame.height], [0, 1])
         norm_ball_x, norm_ball_y = image_rotation_to_turtle_window(norm_ball_x, norm_ball_y)
