@@ -14,7 +14,7 @@ def test_pid_d():
     pid.calc(1, 0.1)
     result = pid.calc(10, 0.1)
     
-    assert result == 0.9
+    assert result == 9.0
 
 def test_pid_i():
     pid = PID(0.0, 0.0, 0.01, 99999999)

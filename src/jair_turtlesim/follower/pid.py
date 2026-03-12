@@ -14,7 +14,7 @@ class PID:
     def calc(self, error: float, dt: float) -> float:
         p_term = error * self._kp
         self._integral_sum += error * dt
-        d_term = (error - self._last_error) * self._kd
+        d_term = (error - self._last_error) * self._kd / dt
 
         self._integral_sum = np.clip(self._integral_sum, -self.output_limit, self.output_limit)
 

@@ -1,7 +1,8 @@
 import numpy as np
 from cv_bridge import CvBridge
+from follower.img_detection import extract_ball_pos
 from follower.pid import PID
-from follower.tracker import calc_turtle_error
+from follower.tracker import calc_turtle_error, normalize_ball_to_turtle_pos
 from rclpy.impl.rcutils_logger import RcutilsLogger
 from sensor_msgs.msg import Image
 from turtlesim.msg import Pose
@@ -20,11 +21,15 @@ class BallTracker:
         self._logger = logger
 
     def track_ball(self, frame: Image, turtle_pos: Pose, dt: float) -> tuple[float, float]:
+        ball_x, ball_y = extract_ball_pos(_ros_img_to_cv2(frame))
+        norm_ball_x, norm_ball_y = normalize_ball_to_turtle_pos(ball_x, ball_y, frame.width, frame.height)
+
         turtle_angular_err, turtle_linear_err = calc_turtle_error(
-            _ros_img_to_cv2(frame),
-            frame.width,
-            frame.height,
-            turtle_pos,
+            norm_ball_x,
+            norm_ball_y,
+            turtle_pos.x,
+            turtle_pos.y,
+            turtle_pos.theta,
         )
 
         gas = self._pid_linear.calc(turtle_linear_err, dt)
