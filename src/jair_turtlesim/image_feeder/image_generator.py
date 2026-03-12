@@ -23,7 +23,7 @@ class ImageGenerator:
         if self.ball_pos_x <= self.ball_radius or self.ball_pos_x + self.ball_radius >= self.image_height:
             self._ball_jumps_x = -1 * get_sign(self._ball_jumps_x) * random.randint(4, 8)
         elif self.ball_pos_y <= self.ball_radius or self.ball_pos_y + self.ball_radius >= self.image_width:
-            self._ball_jumps_y = -1 * get_sign(self._ball_jumps_y) * random.randint(4, 7)
+            self._ball_jumps_y = -1 * get_sign(self._ball_jumps_y) * random.randint(4, 8)
 
         self.ball_pos_x += self._ball_jumps_x
         self.ball_pos_y += self._ball_jumps_y
