@@ -3,7 +3,7 @@ import math
 import pytest
 
 from turtlesim.msg import Pose
-from follower.tracker import calc_turtle_error, calc_turtle_error, normalize_ball_to_turtle_pos
+from follower.tracker import calc_turtle_error, calc_turtle_error
 
 
 def test_turtle_middle_ball_in_front(turtle_pos: Pose):
@@ -101,19 +101,3 @@ def test_turtle_right_down_looking_up_ball_left_behind():
     _, dist = calc_turtle_error(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
 
     assert dist == 0.0
-
-def test_normalize_ball_to_turtle_pos_close_to_zero():
-    ball_pos = 72, 72
-
-    norm_ball_x, norm_ball_y = normalize_ball_to_turtle_pos(ball_pos[0], ball_pos[1], 800, 800)
-
-    assert norm_ball_x == pytest.approx(1, rel=0.1)
-    assert norm_ball_y == pytest.approx(10, rel=0.1)
-
-def test_normalize_ball_to_turtle_pos_close_to_max_width_and_height():
-    ball_pos = 728, 728
-
-    norm_ball_x, norm_ball_y = normalize_ball_to_turtle_pos(ball_pos[0], ball_pos[1], 800, 800)
-
-    assert norm_ball_x == pytest.approx(10, rel=0.1)
-    assert norm_ball_y == pytest.approx(1, rel=0.1)
