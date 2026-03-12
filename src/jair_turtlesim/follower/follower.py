@@ -21,7 +21,8 @@ class Follower(Node):
     def handle_image(self, frame: Image) -> None:
         now_ms = Time.now().to_sec() * 1000.0
 
-        gas, steer = self._ball_tracker.track_ball(frame, self.turtle_pos, dt=now_ms - self._last_img_recv_tm_ms)
+        dt = now_ms - self._last_img_recv_tm_ms
+        gas, steer = self._ball_tracker.track_ball(frame, self.turtle_pos, dt)
 
         twist_msg = Twist()
         twist_msg.linear.x = float(gas)
