@@ -10,11 +10,11 @@ from turtlesim.msg import Pose
 class Follower(Node):
     def __init__(self) -> None:
         super().__init__('turtle_follower')
-        self.sub_img = self.create_subscription(Image, 'camera/raw_image', self.handle_image, 10)
-        self.sub_pos = self.create_subscription(Pose, '/turtle1/pose', self.get_turtle_pose, 10)
-        self.pub_turtle_vel = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
+        self._sub_img = self.create_subscription(Image, 'camera/raw_image', self.handle_image, 10)
+        self._sub_pos = self.create_subscription(Pose, '/turtle1/pose', self.get_turtle_pose, 10)
+        self._pub_turtle_vel = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
 
-        self.turtle_pos = Pose()
+        self._turtle_pos = Pose()
         self._ball_tracker = BallTracker(self.get_logger())
         self._last_img_recv_tm_ms = Time.now().to_sec() * 1000.0
 
@@ -22,16 +22,16 @@ class Follower(Node):
         now_ms = Time.now().to_sec() * 1000.0
 
         dt = now_ms - self._last_img_recv_tm_ms
-        gas, steer = self._ball_tracker.track_ball(frame, self.turtle_pos, dt)
+        gas, steer = self._ball_tracker.track_ball(frame, self._turtle_pos, dt)
 
         twist_msg = Twist()
         twist_msg.linear.x = float(gas)
         twist_msg.angular.z = float(steer)
-        self.pub_turtle_vel.publish(twist_msg)
+        self._pub_turtle_vel.publish(twist_msg)
         self._last_img_recv_tm_ms = now_ms
 
     def get_turtle_pose(self, turtle_pos: Pose) -> None:
-        self.turtle_pos = turtle_pos
+        self._turtle_pos = turtle_pos
 
 
 def main(args: list[str] | None = None) -> None:
