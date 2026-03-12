@@ -44,20 +44,16 @@ def test_turtle_middle_ball_in_back_right(turtle_pos: Pose):
     assert angle == pytest.approx(-3/4 * math.pi)
     assert dist == pytest.approx(0.0)
 
-def test_turtle_left_up_looking_up_ball_behind(turtle_pos: Pose):
-    turtle_pos.x = 1.0
-    turtle_pos.y = 10.0
-    turtle_pos.theta = math.pi / 2.0
+def test_turtle_left_up_looking_up_ball_behind():
+    turtle_pos = Pose(x=1.0 ,y=10.0, theta=math.pi / 2.0)
     ball_pos = 1, 3
     
     angle, _ = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
     
     assert angle == pytest.approx(-math.pi)
 
-def test_turtle_right_down_looking_down_ball_at_right_behind(turtle_pos: Pose):
-    turtle_pos.x = 10.0
-    turtle_pos.y = 1.0
-    turtle_pos.theta = -2 * math.pi
+def test_turtle_right_down_looking_down_ball_at_right_behind():
+    turtle_pos = Pose(x=10.0 ,y=1.0, theta=-2 * math.pi)
     ball_pos = 10 - 0.0000001, 3
     
     angle, dist = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
@@ -65,10 +61,8 @@ def test_turtle_right_down_looking_down_ball_at_right_behind(turtle_pos: Pose):
     assert angle == pytest.approx(math.pi / 2 - 0.000001)
     assert dist == pytest.approx(0)
 
-def test_turtle_right_down_looking_up_ball_left(turtle_pos: Pose):
-    turtle_pos.x = 10.0
-    turtle_pos.y = 3.0
-    turtle_pos.theta = math.pi / 2.0
+def test_turtle_right_down_looking_up_ball_left():
+    turtle_pos = Pose(x=10.0 ,y=3.0, theta=math.pi / 2.0)
     ball_pos = 1, 3
     
     angle, dist = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
@@ -76,30 +70,24 @@ def test_turtle_right_down_looking_up_ball_left(turtle_pos: Pose):
     assert angle == pytest.approx(math.pi / 2)
     assert dist == pytest.approx(9)
 
-def test_turtle_mid_looking_left_ball_right(turtle_pos: Pose):
-    turtle_pos.x = 5.0
-    turtle_pos.y = 5.0
-    turtle_pos.theta = math.pi / 2.0
+def test_turtle_mid_looking_left_ball_right():
+    turtle_pos = Pose(x=5.0 ,y=5.0, theta=math.pi / 2.0)
     ball_pos = 6, 6
     
     _, dist = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
 
     assert dist == pytest.approx(math.sqrt(1 + 1))
 
-def test_turtle_mid_looking_right_ball_right(turtle_pos: Pose):
-    turtle_pos.x = 5.0
-    turtle_pos.y = 5.0
-    turtle_pos.theta = 0.0
+def test_turtle_mid_looking_right_ball_right():
+    turtle_pos = Pose(x=5.0 ,y=5.0, theta=0.0)
     ball_pos = 6, 6
     
     _, dist = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
 
     assert dist == pytest.approx(math.sqrt(1 + 1))
 
-def test_turtle_left_looking_up_ball_left_behind(turtle_pos: Pose):
-    turtle_pos.x = 5.0
-    turtle_pos.y = 5.0
-    turtle_pos.theta = math.pi / 2.0
+def test_turtle_left_looking_up_ball_left_behind():
+    turtle_pos = Pose(x=5.0 ,y=5.0, theta=math.pi / 2.0)
     ball_pos = 4, 4
     
     _, dist = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
@@ -107,9 +95,7 @@ def test_turtle_left_looking_up_ball_left_behind(turtle_pos: Pose):
     assert dist == 0.0
 
 def test_turtle_right_down_looking_up_ball_left_behind(turtle_pos: Pose):
-    turtle_pos.x = 5.0
-    turtle_pos.y = 5.0
-    turtle_pos.theta = 0.0
+    turtle_pos = Pose(x=5.0 ,y=5.0, theta=0.0)
     ball_pos = 4, 4
     
     _, dist = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
