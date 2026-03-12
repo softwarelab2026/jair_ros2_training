@@ -45,8 +45,8 @@ def test_turtle_middle_ball_in_back_right(turtle_pos: Pose):
     assert dist == pytest.approx(0.0)
 
 def test_turtle_left_up_looking_up_ball_behind(turtle_pos: Pose):
-    turtle_pos._x = 1
-    turtle_pos._y = 10
+    turtle_pos.x = 1.0
+    turtle_pos.y = 10.0
     turtle_pos.theta = math.pi / 2.0
     ball_pos = 1, 3
     
@@ -55,8 +55,8 @@ def test_turtle_left_up_looking_up_ball_behind(turtle_pos: Pose):
     assert angle == pytest.approx(-math.pi)
 
 def test_turtle_right_down_looking_down_ball_at_right_behind(turtle_pos: Pose):
-    turtle_pos._x = 10
-    turtle_pos._y = 1
+    turtle_pos.x = 10.0
+    turtle_pos.y = 1.0
     turtle_pos.theta = -2 * math.pi
     ball_pos = 10 - 0.0000001, 3
     
@@ -66,8 +66,8 @@ def test_turtle_right_down_looking_down_ball_at_right_behind(turtle_pos: Pose):
     assert dist == pytest.approx(0)
 
 def test_turtle_right_down_looking_up_ball_left(turtle_pos: Pose):
-    turtle_pos._x = 10
-    turtle_pos._y = 3
+    turtle_pos.x = 10.0
+    turtle_pos.y = 3.0
     turtle_pos.theta = math.pi / 2.0
     ball_pos = 1, 3
     
@@ -77,8 +77,8 @@ def test_turtle_right_down_looking_up_ball_left(turtle_pos: Pose):
     assert dist == pytest.approx(9)
 
 def test_turtle_mid_looking_left_ball_right(turtle_pos: Pose):
-    turtle_pos._x = 5
-    turtle_pos._y = 5
+    turtle_pos.x = 5.0
+    turtle_pos.y = 5.0
     turtle_pos.theta = math.pi / 2.0
     ball_pos = 6, 6
     
@@ -87,8 +87,8 @@ def test_turtle_mid_looking_left_ball_right(turtle_pos: Pose):
     assert dist == pytest.approx(math.sqrt(1 + 1))
 
 def test_turtle_mid_looking_right_ball_right(turtle_pos: Pose):
-    turtle_pos._x = 5
-    turtle_pos._y = 5
+    turtle_pos.x = 5.0
+    turtle_pos.y = 5.0
     turtle_pos.theta = 0.0
     ball_pos = 6, 6
     
@@ -97,8 +97,8 @@ def test_turtle_mid_looking_right_ball_right(turtle_pos: Pose):
     assert dist == pytest.approx(math.sqrt(1 + 1))
 
 def test_turtle_left_looking_up_ball_left_behind(turtle_pos: Pose):
-    turtle_pos._x = 5
-    turtle_pos._y = 5
+    turtle_pos.x = 5.0
+    turtle_pos.y = 5.0
     turtle_pos.theta = math.pi / 2.0
     ball_pos = 4, 4
     
@@ -107,8 +107,8 @@ def test_turtle_left_looking_up_ball_left_behind(turtle_pos: Pose):
     assert dist == 0.0
 
 def test_turtle_right_down_looking_up_ball_left_behind(turtle_pos: Pose):
-    turtle_pos._x = 5
-    turtle_pos._y = 5
+    turtle_pos.x = 5.0
+    turtle_pos.y = 5.0
     turtle_pos.theta = 0.0
     ball_pos = 4, 4
     
