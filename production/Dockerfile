@@ -1,4 +1,4 @@
-FROM ros_turtlesim_base:latest
+FROM my_turtlesim_base:latest
 
 SHELL ["/bin/bash", "-c"]
 
