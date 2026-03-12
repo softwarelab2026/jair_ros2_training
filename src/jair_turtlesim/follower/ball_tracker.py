@@ -4,7 +4,6 @@ from cv_bridge import CvBridge
 from follower.pid import PID
 from follower.tracker import turtle_follow_ball
 from rclpy.impl.rcutils_logger import RcutilsLogger
-from roslibpy import Time
 from sensor_msgs.msg import Image
 from turtlesim.msg import Pose
 
@@ -23,7 +22,6 @@ class BallTracker:
         self.pid_linear = PID(30, 0.05, 0.01, 10)
         self.pid_angular = PID(12, 0.05, 0.01, 10)
 
-        self._last_tracker_call = Time.now()
         self._logger = logger
 
     def extract_ball_pos(self, frame: np.ndarray) -> tuple[int, int]:
@@ -41,7 +39,7 @@ class BallTracker:
                 return (int(x), int(y))
         return (0, 0)
 
-    def track_ball(self, _frame: Image, turtle_pos: Pose) -> tuple[float, float]:
+    def track_ball(self, _frame: Image, turtle_pos: Pose, dt: float) -> tuple[float, float]:
         turtle_window_width, turtle_window_height = 11, 11
 
         ball_x, ball_y = self.extract_ball_pos(ros_img_to_cv2(_frame))
@@ -60,7 +58,6 @@ class BallTracker:
             turtle_pos.theta,
         )
 
-        dt = (Time.now().to_sec() - self._last_tracker_call.to_sec()) * 1000.0
         gas = self.pid_linear.calc(turtle_linear_err, dt)
         steer = self.pid_angular.calc(turtle_angular_err, dt)
 
@@ -68,6 +65,4 @@ class BallTracker:
             self._logger.info(f'gas, steer: {round(gas, 2)},\t{round(steer, 2)} rad')
 
         gas = max(gas, 0)
-
-        self._last_tracker_call = Time.now()
         return gas, steer

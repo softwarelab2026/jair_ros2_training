@@ -6,3 +6,4 @@ rclpy-intellisense
 ros-std-msgs
 rosbags
 rosbags-image
+roslibpy

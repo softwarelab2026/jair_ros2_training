@@ -2,6 +2,7 @@ import rclpy
 from follower.ball_tracker import BallTracker
 from geometry_msgs.msg import Twist
 from rclpy.node import Node
+from roslibpy import Time
 from sensor_msgs.msg import Image
 from turtlesim.msg import Pose
 
@@ -15,14 +16,18 @@ class Follower(Node):
 
         self.turtle_pos = Pose()
         self._ball_tracker = BallTracker(self.get_logger())
+        self._last_img_recv_tm_ms = Time.now().to_sec() * 1000.0
 
     def handle_image(self, frame: Image) -> None:
-        gas, steer = self._ball_tracker.track_ball(frame, self.turtle_pos)
+        now_ms = Time.now().to_sec() * 1000.0
+
+        gas, steer = self._ball_tracker.track_ball(frame, self.turtle_pos, dt=now_ms - self._last_img_recv_tm_ms)
 
         twist_msg = Twist()
         twist_msg.linear.x = float(gas)
         twist_msg.angular.z = float(steer)
         self.pub_turtle_vel.publish(twist_msg)
+        self._last_img_recv_tm_ms = now_ms
 
     def get_turtle_pose(self, turtle_pos: Pose) -> None:
         self.turtle_pos = turtle_pos
