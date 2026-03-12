@@ -13,10 +13,6 @@ def image_generator() -> ImageGenerator:
     return generator
 
 @pytest.fixture
-def ball_tracker() -> BallTracker:
-    return BallTracker(None)
-
-@pytest.fixture
 def turtle_pos() -> Pose:
     pose = Pose(x=11/2, y=11/2, theta=0.0)
     return pose
