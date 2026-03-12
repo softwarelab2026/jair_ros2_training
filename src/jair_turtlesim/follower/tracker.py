@@ -8,7 +8,7 @@ def calc_distance(ball_x: float, ball_y: float, turtle_x: float, turtle_y: float
     return dist
 
 
-def turn_with_closest_angle(angle_diff: float) -> float:
+def _turn_with_closest_angle(angle_diff: float) -> float:
     coterminal_angle_plus = angle_diff + 2 * math.pi
     coterminal_angle_minus = angle_diff - 2 * math.pi
 
@@ -24,7 +24,7 @@ def calc_turn_angle(ball_x: float, ball_y: float, turtle_x: float, turtle_y: flo
     x_dist = ball_x - turtle_x
     y_dist = ball_y - turtle_y
     ball_angle = math.atan2(y_dist, x_dist)
-    return turn_with_closest_angle(ball_angle - turtle_theta_rad)
+    return _turn_with_closest_angle(ball_angle - turtle_theta_rad)
 
 
 def ball_behind_turtle(ball_angle: float) -> bool:
