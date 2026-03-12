@@ -8,10 +8,6 @@ on:
     branches:
       - '*'
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   build-push-container:
     runs-on: ubuntu-latest
@@ -36,6 +32,5 @@ jobs:
           pre-commit run --all-files
       - name: run tests
         run: |
-          source /opt/ros/humble/setup.sh
           cd src/jair_turtlesim
           python3 -m pytest
