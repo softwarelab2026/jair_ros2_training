@@ -1,7 +1,6 @@
 
 import pytest
 from image_feeder.image_generator import ImageGenerator
-from follower.ball_tracker import BallTracker
 from turtlesim.msg import Pose
 
 @pytest.fixture
