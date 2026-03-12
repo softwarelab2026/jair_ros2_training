@@ -1,0 +1,7 @@
+__pycache__
+build
+log
+install
+
+.vscode/browse.vc**
+.vscode/c_cpp_properties.json

@@ -1,0 +1,9 @@
+numpy<2.0.0
+opencv-python
+pre-commit
+pytest
+rclpy-intellisense
+ros-std-msgs
+rosbags
+rosbags-image
+roslibpy

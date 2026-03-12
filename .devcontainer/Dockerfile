@@ -1,16 +1,15 @@
-# FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04
-FROM osrf/ros:humble-desktop-full
-
+FROM osrf/ros:humble-desktop
 RUN apt update && apt upgrade -y
-RUN apt install -y ros-humble-turtlesim ros-humble-rqt
 
-RUN apt install -y bash-completion python3-argcomplete python3-colcon-argcomplete
-
-# env 
 RUN apt install -y ssh git
-
 # GUI - on host: sudo xhost +local:docker
 ENV DISPLAY=$DISPLAY
 ENV XAUTHORITY=/tmp/.docker.xauth
 
-RUN apt install -y x11-apps
+RUN apt install -y bash-completion python3-pip python3-argcomplete python3-colcon-argcomplete
+
+RUN apt install -y ros-humble-turtlesim ros-humble-rqt python3-colcon-core python3-colcon-common-extensions
+
+WORKDIR /workspace
+ADD requirements.txt .
+RUN pip install -r requirements.txt

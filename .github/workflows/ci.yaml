@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+  push:
+    branches:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-push-container:
+    runs-on: ubuntu-latest
+    container:
+      image: osrf/ros:humble-desktop
+    steps:
+      - uses: actions/checkout@v4
+      - name: install python deps
+        run: |
+          apt update
+          apt install -y python3 python3-pip git
+      - name: install ROS2 deps for simulation
+        run: |
+          apt install -y ros-humble-turtlesim ros-humble-rqt python3-colcon-core python3-colcon-common-extensions
+      - name: setup env
+        run: |
+          /bin/bash .devcontainer/setup_devcontainer.sh
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+      - name: run pre-commit
+        run: |
+          pre-commit run --all-files
+      - name: run tests
+        run: |
+          source /opt/ros/humble/setup.sh
+          cd src/jair_turtlesim
+          python3 -m pytest

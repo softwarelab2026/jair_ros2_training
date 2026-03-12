@@ -1,0 +1,54 @@
+{
+    "version": "0.2.0",
+    "tasks": [
+        {
+            "label": "Run Turtlesim",
+            "type": "shell",
+            "command": "source install/setup.bash && ros2 launch run.launch.py",
+            "options": {
+                "cwd": "${workspaceFolder}/src",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-c"
+                    ]
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "clear && python3 -m pytest",
+            "options": {
+                "cwd": "${workspaceFolder}/src/jair_turtlesim",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-c"
+                    ]
+                }
+            }
+        },
+        {
+            "label": "pre-commit",
+            "type": "shell",
+            "command": "pre-commit run --all-files",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell": {
+                    "executable": "/bin/bash",
+                    "args": [
+                        "-c"
+                    ]
+                }
+            },
+            "problemMatcher": []
+        }
+    ]
+}

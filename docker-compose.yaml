@@ -1,0 +1,26 @@
+services:
+  my_turtlesim_base:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    image: my_turtlesim_base:latest
+
+    # profiles:
+    #   - build-only
+    command: ["echo", "Base build finished"]
+    deploy:
+      replicas: 0 # prevent from running
+
+
+  turtlesim:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    container_name: turtlesim_tracker
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    depends_on:
+      - my_turtlesim_base
