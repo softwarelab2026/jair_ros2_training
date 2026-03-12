@@ -49,7 +49,7 @@ def test_turtle_middle_ball_in_back_right(turtle_pos: Pose):
 def test_turtle_left_up_looking_down_ball_at_right(turtle_pos: Pose):
     turtle_pos._x = 1
     turtle_pos._y = 10
-    turtle_pos._theta = -math.pi / 2 + 0.05
+    turtle_pos.theta = -math.pi / 2.0 + 0.05
     ball_pos = 0.05, 3
     
     angle, dist = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
@@ -60,7 +60,7 @@ def test_turtle_left_up_looking_down_ball_at_right(turtle_pos: Pose):
 def test_turtle_right_down_looking_down_ball_at_right_behind(turtle_pos: Pose):
     turtle_pos._x = 10
     turtle_pos._y = 1
-    turtle_pos._theta = -math.pi / 2 + 0.05
+    turtle_pos.theta = -math.pi / 2.0 + 0.05
     ball_pos = 0.05, 3
     
     angle, dist = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
@@ -71,7 +71,7 @@ def test_turtle_right_down_looking_down_ball_at_right_behind(turtle_pos: Pose):
 def test_turtle_right_down_looking_up_ball_left(turtle_pos: Pose):
     turtle_pos._x = 10
     turtle_pos._y = 3
-    turtle_pos._theta = math.pi / 2
+    turtle_pos.theta = math.pi / 2.0
     ball_pos = 1, 3.5
     
     angle, dist = turtle_follow_ball(ball_pos[0], ball_pos[1], turtle_pos.x, turtle_pos.y, turtle_pos.theta)
