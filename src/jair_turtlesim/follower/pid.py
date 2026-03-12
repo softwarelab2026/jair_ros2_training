@@ -3,8 +3,8 @@ import numpy as np
 
 # pylint: disable=too-few-public-methods
 class PID:
-    def __init__(self, kp: float = 0.8, kd: float = 0.05, ki: float = 0.01):
-        self.output_limit = 4.0
+    def __init__(self, kp: float = 0.8, kd: float = 0.05, ki: float = 0.01, output_limit: float = 4.0):
+        self.output_limit = output_limit
         self._kp = kp
         self._kd = kd
         self._ki = ki
