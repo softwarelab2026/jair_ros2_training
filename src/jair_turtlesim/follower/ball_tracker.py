@@ -1,11 +1,10 @@
-import time
-
 import cv2
 import numpy as np
 from cv_bridge import CvBridge
 from follower.pid import PID
 from follower.tracker import turtle_follow_ball
 from rclpy.impl.rcutils_logger import RcutilsLogger
+from roslibpy import Time
 from sensor_msgs.msg import Image
 from turtlesim.msg import Pose
 
@@ -24,7 +23,7 @@ class BallTracker:
         self.pid_linear = PID(30, 0.05, 0.01, 10)
         self.pid_angular = PID(12, 0.05, 0.01, 10)
 
-        self._last_tracker_call = time.time()
+        self._last_tracker_call = Time.now()
         self._logger = logger
 
     def extract_ball_pos(self, frame: np.ndarray) -> tuple[int, int]:
@@ -61,7 +60,7 @@ class BallTracker:
             turtle_pos.theta,
         )
 
-        dt = time.time() - self._last_tracker_call
+        dt = (Time.now().to_sec() - self._last_tracker_call.to_sec()) * 1000.0
         gas = self.pid_linear.calc(turtle_linear_err, dt)
         steer = self.pid_angular.calc(turtle_angular_err, dt)
 
@@ -70,5 +69,5 @@ class BallTracker:
 
         gas = max(gas, 0)
 
-        self._last_tracker_call = time.time()
+        self._last_tracker_call = Time.now()
         return gas, steer
