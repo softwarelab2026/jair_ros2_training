@@ -1,5 +1,14 @@
 import math
 
+import numpy as np
+from follower.img_detection import extract_ball_pos
+from turtlesim.msg import Pose
+
+
+def image_rotation_to_turtle_window(ball_x: float, ball_y: float) -> tuple[float, float]:
+    ball_y = 11 - ball_y
+    return ball_x, ball_y
+
 
 def calc_distance(ball_x: float, ball_y: float, turtle_x: float, turtle_y: float) -> float:
     x_dist = ball_x - turtle_x
@@ -31,7 +40,7 @@ def ball_behind_turtle(ball_angle: float) -> bool:
     return abs(ball_angle) > math.pi / 2
 
 
-def turtle_follow_ball(
+def calc_turtle_error_norm(
     ball_x: float,
     ball_y: float,
     turtle_x: float,
@@ -45,3 +54,21 @@ def turtle_follow_ball(
         dist = 0
 
     return turn_angle, dist
+
+
+def calc_turtle_error(frame: np.ndarray, frame_width: int, frame_height: int, turtle_pos: Pose) -> tuple[float, float]:
+    turtle_window_width, turtle_window_height = 11, 11
+
+    ball_x, ball_y = extract_ball_pos(frame)
+    norm_ball_x = np.interp(ball_x, [0, frame_width], [0, turtle_window_width])
+    norm_ball_y = np.interp(ball_y, [0, frame_height], [0, turtle_window_height])
+    norm_ball_x, norm_ball_y = image_rotation_to_turtle_window(norm_ball_x, norm_ball_y)
+
+    turtle_angular_err, turtle_linear_err = calc_turtle_error_norm(
+        norm_ball_x,
+        norm_ball_y,
+        turtle_pos.x,
+        turtle_pos.y,
+        turtle_pos.theta,
+    )
+    return turtle_angular_err, turtle_linear_err
