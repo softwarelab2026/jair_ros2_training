@@ -17,8 +17,5 @@ def ball_tracker() -> BallTracker:
 
 @pytest.fixture
 def turtle_pos() -> Pose:
-    pose = Pose()
-    pose.theta = 0.0
-    pose.x = 11/2
-    pose.y = 11/2
+    pose = Pose(x=11/2, y=11/2, theta=0.0)
     return pose
