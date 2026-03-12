@@ -4,7 +4,7 @@
         {
             "label": "Run Turtlesim",
             "type": "shell",
-            "command": "rm -rf build install log && colcon build --symlink-install && source install/setup.bash && ros2 launch run.py",
+            "command": "source install/setup.bash && ros2 launch run.py",
             "options": {
                 "cwd": "${workspaceFolder}/src",
                 "shell": {
@@ -24,7 +24,7 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "colcon build --symlink-install && clear && python3 -m pytest",
+            "command": "clear && python3 -m pytest",
             "options": {
                 "cwd": "${workspaceFolder}/src/jair_turtlesim",
                 "shell": {

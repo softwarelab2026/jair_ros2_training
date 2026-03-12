@@ -8,3 +8,7 @@ echo "export _colcon_cd_root=/opt/ros/humble/" >> ~/.bashrc
 pip install -r requirements.txt
 pre-commit install
 pre-commit run
+
+source ~/.bashrc
+cd src && rm -rf build install log && colcon build --symlink-install && cd -
+source src/install/setup.bash
