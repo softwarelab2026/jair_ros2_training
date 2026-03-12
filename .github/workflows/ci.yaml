@@ -32,7 +32,6 @@ jobs:
           pre-commit run --all-files
       - name: run tests
         run: |
-          . /opt/ros/humble/setup.sh
+          source /opt/ros/humble/setup.sh
           cd src/jair_turtlesim
-          colcon build
           python3 -m pytest
